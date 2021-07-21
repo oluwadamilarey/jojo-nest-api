@@ -1,0 +1,281 @@
+// This is the base schema file that contains the datasource and generator.
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["orderByRelation", "selectRelationCount"]
+}
+
+/////////////////////////////////////////////////
+////// ENUMS
+////////////////////////////////////////////////
+
+/// The user roles for caregivers
+enum CareGiverRole {
+  GUARDIAN
+  MOTHER
+  FATHER
+}
+
+/// The user roles for health professionals
+enum HealthCareProfessionalRole {
+  PEDEATRICIAN
+  GENERAL_PRACTITIONER
+  DENTIST
+  LACTATIONIST
+  DERMATOLOGIST
+  THERAPIST
+  NUTRITIONIST
+}
+
+/// The types of users in the application
+enum UserType {
+  CARE_GIVER
+  HEALTH_CARE_PROFESSIONAL
+}
+
+/// The expected kinds of file uploads when verifying a health professionals account
+enum HealthProfessionalVerificationFileType {
+  MEDICAL_LICENSE
+  VALID_ID
+}
+
+/// Human Gender
+enum Gender {
+  MALE
+  FEMALE
+}
+
+/// The term in which a child was born
+enum BirthTerm {
+  PRE_TERM
+  TERM
+  POST_TERM
+  NOT_SURE
+}
+
+/// Blood Group
+enum BloodGroup {
+  A
+  B
+  AB
+  O
+}
+
+/// Genotype
+enum Genotype {
+  AA
+  AS
+  SS
+  AC
+}
+
+//////////////////////////////////////////////////
+///// USER MODULE
+/////////////////////////////////////////////////
+
+/// General user information, for both caregivers and health professionals
+model User {
+  id                               Int                            @id @default(autoincrement())
+  uuid                             String                         @unique @default(cuid())
+  email                            String                         @unique
+  full_name                        String
+  phone_number                     String
+  password                         String
+  profile_image                    String
+  created_at                       DateTime                       @default(now())
+  updated_at                       DateTime                       @default(now()) @updatedAt
+  user_type                        UserType
+  care_giver_profile               CareGiverProfile?
+  health_care_professional_profile HealthCareProfessionalProfile?
+  posts                            Post[]
+  saved_posts                      SavedPosts[]
+  liked_posts                      LikedPosts[]
+  post_comments                    PostComment[]
+  post_comment_replies             PostCommentReply[]
+
+  @@map(name: "users")
+}
+
+/// Profile for a care giver
+model CareGiverProfile {
+  id         Int           @id @default(autoincrement())
+  user_id    Int
+  uuid       String        @unique @default(cuid())
+  role       CareGiverRole
+  country    String
+  state      String
+  city       String
+  address    String
+  user       User          @relation(fields: [user_id], references: [id])
+  children   Child[]
+  created_at DateTime      @default(now())
+  updated_at DateTime      @default(now()) @updatedAt
+
+  @@map(name: "care_giver_profiles")
+}
+
+/// Profile for a Health Professional
+model HealthCareProfessionalProfile {
+  id                  Int                                      @id @default(autoincrement())
+  user_id             Int
+  years_of_experience Int
+  role                HealthCareProfessionalRole
+  user                User                                     @relation(fields: [user_id], references: [id])
+  verification_files  HealthCareProfessionalVerificationFile[]
+  created_at          DateTime                                 @default(now())
+  updated_at          DateTime                                 @default(now()) @updatedAt
+
+  @@map(name: "health_care_professional_profiles")
+}
+
+/// Model for files uploaded during the verification of a healthcare professional during signup
+model HealthCareProfessionalVerificationFile {
+  id                                  Int                                    @id @default(autoincrement())
+  type                                HealthProfessionalVerificationFileType
+  file_url                            String
+  health_care_professional_profile_id Int
+  health_care_professional_profile    HealthCareProfessionalProfile          @relation(fields: [health_care_professional_profile_id], references: [id])
+  created_at                          DateTime                               @default(now())
+  updated_at                          DateTime                               @default(now()) @updatedAt
+
+  @@map(name: "health_care_professional_verification_files")
+}
+
+/// A child account added and monitored by a caregiver
+model Child {
+  id                     Int              @id @default(autoincrement())
+  uuid                   String           @unique @default(cuid())
+  care_giver_profile_id  Int
+  first_name             String
+  date_of_birth          DateTime
+  gender                 Gender
+  birth_term             BirthTerm
+  blood_group            BloodGroup
+  genotype               Genotype
+  has_allergies          Boolean          @default(false)
+  has_special_needs      Boolean          @default(false)
+  has_medical_conditions Boolean          @default(false)
+  allergies              String[]
+  track_milestones       Boolean          @default(false)
+  track_growth           Boolean          @default(false)
+  track_immunizations    Boolean          @default(false)
+  created_at             DateTime         @default(now())
+  updated_at             DateTime         @updatedAt
+  care_giver_profile     CareGiverProfile @relation(fields: [care_giver_profile_id], references: [id])
+
+  @@map(name: "children")
+}
+
+//////////////////////////////////////////////////
+///// END OF USER MODULE
+/////////////////////////////////////////////////
+
+////////////////////////////////////////////////
+///// FORUM MODULE
+////////////////////////////////////////////////
+
+/// A post posted by a user
+model Post {
+  id                 Int              @id @default(autoincrement())
+  uuid               String           @default(cuid())
+  title              String
+  content            String
+  posted_anonymously Boolean          @default(false)
+  likes              Int              @default(0)
+  user_id            Int
+  user               User             @relation(fields: [user_id], references: [id])
+  created_at         DateTime         @default(now())
+  updated_at         DateTime         @default(now()) @updatedAt
+  files              PostFileUpload[]
+  tags               PostTag[]
+  comments           PostComment[]
+  saved_posts        SavedPosts[]
+
+  @@map(name: "posts")
+}
+
+/// Files uploaded to a post
+model PostFileUpload {
+  id       Int    @id @default(autoincrement())
+  file_url String
+  post_id  Int
+  post     Post?  @relation(fields: [post_id], references: [id])
+
+  @@map(name: "post_file_uploads")
+}
+
+/// Model for a tag for posts
+model PostTag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[]
+
+  @@map(name: "post_tags")
+}
+
+/// m-m join table for saved posts
+model SavedPosts {
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  post_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  post    Post @relation(fields: [post_id], references: [id])
+
+  @@map(name: "saved_posts")
+}
+
+/// m-m join table for liked posts
+model LikedPosts {
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  post_id Int
+  user    User @relation(fields: [user_id], references: [id])
+
+  @@map(name: "liked_posts")
+}
+
+/// Model for comments made on posts
+model PostComment {
+  id         Int                @id @default(autoincrement())
+  user_id    Int
+  post_id    Int
+  content    String
+  user       User               @relation(fields: [user_id], references: [id])
+  post       Post               @relation(fields: [post_id], references: [id])
+  created_at DateTime           @default(now())
+  updated_at DateTime           @default(now()) @updatedAt
+  replies    PostCommentReply[]
+
+  @@map(name: "post_comments")
+}
+
+/// Model for replies to a comment
+model PostCommentReply {
+  id         Int         @id @default(autoincrement())
+  user_id    Int
+  comment_id Int
+  content    String
+  created_at DateTime    @default(now())
+  updated_at DateTime    @default(now()) @updatedAt
+  user       User        @relation(fields: [user_id], references: [id])
+  comment    PostComment @relation(fields: [comment_id], references: [id])
+
+  @@map(name: "post_comment_replies")
+}
+
+/// Model for reported posts
+model ReportedPosts {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  post_id    Int
+  reason     String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@map(name: "reported_posts")
+}

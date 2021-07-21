@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  dev:
+    container_name: jojolo_api_dev
+    image: jojolo-api-dev:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: sh scripts/start.sh
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://jojolo:password@postgres:5432/jojolo
+    depends_on:
+      - postgres
+    ports:
+      - 3100:3000
+      - 9129:9229
+    networks:
+      - jojolo-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  # prod:
+  #   container_name: jojolo_api_prod
+  #   image: jojolo-api-prod:1.0.0
+  #   build:
+  #     context: .
+  #     target: production
+  #     dockerfile: ./Dockerfile
+  #   command: npm run start:prod
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 3000:3000
+  #     - 9229:9229
+  #   networks:
+  #     - jojolo-network
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   restart: unless-stopped
+
+  postgres:
+    image: postgres:12
+    container_name: postgres
+    restart: always
+    ports:
+      - 5632:5432
+    networks:
+      - jojolo-network
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - jojolo-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  jojolo-postgres-data:
+
+networks:
+  jojolo-network:

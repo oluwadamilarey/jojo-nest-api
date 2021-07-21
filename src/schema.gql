@@ -1,0 +1,671 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Response returned after saving a post"""
+type ApiResponse {
+  """
+  A message indicating the success / error that occurs when saving a post
+  """
+  message: String!
+
+  """Indicates if the operation was successful or not"""
+  success: Boolean!
+}
+
+"""The birth term of a child"""
+enum BirthTerm {
+  NOT_SURE
+  POST_TERM
+  PRE_TERM
+  TERM
+}
+
+"""Human blood group"""
+enum BloodGroup {
+  A
+  AB
+  B
+  O
+}
+
+type CareGiverProfile {
+  """The care giver's address"""
+  address: String!
+
+  """The children added by the care giver"""
+  children: [Child]!
+
+  """The care giver's city"""
+  city: String!
+
+  """The care giver's country"""
+  country: String!
+
+  """The date and time when the care giver profile was created"""
+  created_at: DateTime!
+
+  """The care giver profile id"""
+  id: Int!
+
+  """The care giver's role"""
+  role: CareGiverRole!
+
+  """The care giver's state"""
+  state: String!
+
+  """The date and time when the care giver profile was last updated"""
+  updated_at: DateTime!
+
+  """The care giver's user account"""
+  user: User!
+
+  """The care giver profile uuid"""
+  uuid: ID!
+}
+
+"""The roles that caregivers can have"""
+enum CareGiverRole {
+  FATHER
+  GUARDIAN
+  MOTHER
+}
+
+"""Model for a child added by a caregiver"""
+type Child {
+  """A list of allergies that the child has"""
+  allergies: [String!]!
+
+  """The child's birth term"""
+  birth_term: BirthTerm!
+
+  """The child's blood group"""
+  blood_group: BloodGroup!
+
+  """The child's date of birth"""
+  date_of_birth: DateTime!
+
+  """The child's first name"""
+  first_name: String!
+
+  """The child's gender"""
+  gender: Gender!
+
+  """The child's genotype"""
+  genotype: Genotype!
+
+  """Indicates if the child has allergies"""
+  has_allergies: Boolean!
+
+  """Indicates if the child has any medical condition"""
+  has_medical_conditions: Boolean!
+
+  """Indicates if the child has special needs"""
+  has_special_needs: Boolean!
+
+  """Indicates if the caregiver wants to track the child's growth"""
+  track_growth: Boolean!
+
+  """Indicates if the caregiver wants to track the child's immunizations"""
+  track_immunizations: Boolean!
+
+  """Indicates if the caregiver wants to track the child's milestones"""
+  track_milestones: Boolean!
+}
+
+"""Input used in creating a child when signing up a care giver account"""
+input CreateCareGiverChildInput {
+  """A list of allergies that the child has"""
+  allergies: [String!]!
+
+  """The child's birth term"""
+  birth_term: BirthTerm!
+
+  """The child's blood group"""
+  blood_group: BloodGroup!
+
+  """The child's date of birth"""
+  date_of_birth: DateTime!
+
+  """The child's first name"""
+  first_name: String!
+
+  """The child's gender"""
+  gender: Gender!
+
+  """The child's genotype"""
+  genotype: Genotype!
+
+  """Indicates if the child has allergies"""
+  has_allergies: Boolean!
+
+  """Indicates if the child has any medical condition"""
+  has_medical_conditions: Boolean!
+
+  """Indicates if the child has special needs"""
+  has_special_needs: Boolean!
+
+  """Indicates if the caregiver wants to track the child's growth"""
+  track_growth: Boolean!
+
+  """Indicates if the caregiver wants to track the child's immunizations"""
+  track_immunizations: Boolean!
+
+  """Indicates if the caregiver wants to track the child's milestones"""
+  track_milestones: Boolean!
+}
+
+"""Input for creating a care giver account"""
+input CreateCareGiverInput {
+  """The user's address"""
+  address: String!
+
+  """Data for a child the caregiver wants to add while signing up"""
+  child: CreateCareGiverChildInput
+
+  """The user's city of residence"""
+  city: String!
+
+  """The user's country of residence"""
+  country: String!
+
+  """The user's email address"""
+  email: String!
+
+  """The user's full name"""
+  full_name: String!
+
+  """The user's password"""
+  password: String!
+
+  """The user's phone number"""
+  phone_number: String!
+
+  """The care giver's role"""
+  role: CareGiverRole!
+
+  """The user's state of residence"""
+  state: String!
+}
+
+input CreateHealthCareProfessionalInput {
+  """The user's email address"""
+  email: String!
+
+  """The user's full name"""
+  full_name: String!
+
+  """The user's password"""
+  password: String!
+
+  """The user's phone number"""
+  phone_number: String!
+
+  """The health care professional's role"""
+  role: HealthCareProfessionalRole!
+
+  """The verification files for the health care professional's profile"""
+  verification_files: [CreateHealthCareProfessionalVerificationFilesInput!]!
+
+  """The health care professional's years of experience"""
+  years_of_experience: Int!
+}
+
+input CreateHealthCareProfessionalVerificationFilesInput {
+  """The base64 encoded file data"""
+  file_data: String!
+
+  """The kind of verification file being uploaded"""
+  type: HealthCareProfessionalVerificationFileType!
+}
+
+"""Input for posts"""
+input CreatePostInput {
+  """The post content"""
+  content: String!
+
+  """An array of images added to the post"""
+  images: [Upload]
+
+  """Indicates if the user wants to make the post anonymous"""
+  posted_anonymously: Boolean!
+
+  """An array of ids for the tags added to the post"""
+  tags: [Int!]!
+
+  """The post title"""
+  title: String!
+
+  """The id of the user who owns the post"""
+  user_id: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""Input for finding a user based on unique values"""
+input FindUserInput {
+  email: String
+  id: Float
+  uuid: String
+}
+
+"""Human Gender"""
+enum Gender {
+  FEMALE
+  MALE
+}
+
+"""Human genotype"""
+enum Genotype {
+  AA
+  AC
+  AS
+  SS
+}
+
+"""Input for getting a post's comments"""
+input GetPostCommentsInput {
+  """The id of the post whose comments are needed"""
+  post_id: Int!
+}
+
+"""Input for getting the forum news feed of posts"""
+input GetPostsFeedInput {
+  """
+  The type of sorting to be done on the posts, either by popularity or by latest posts
+  """
+  sortType: PostsSortType
+}
+
+"""Input for getting all posts that belong to a tag"""
+input GetPostsForTagInput {
+  """The id of the tag whose posts we need"""
+  tag_id: Int!
+}
+
+"""Input for getting a users posts"""
+input GetUserPostsInput {
+  """The id of the user whose posts we are retrieving"""
+  user_id: Int!
+}
+
+"""Input for getting a users saved posts"""
+input GetUserSavedPostsInput {
+  """The id of the user whose saved posts we are retrieving"""
+  user_id: Int!
+}
+
+type HealthCareProfessionalProfile {
+  """The date and time when the health professional's profile was created"""
+  created_at: DateTime!
+
+  """The health professional's profile id"""
+  id: Int!
+
+  """The healthcare professional's role"""
+  role: HealthCareProfessionalRole!
+
+  """
+  The date and time when the health professional's profile was last updated
+  """
+  updated_at: DateTime!
+
+  """The health professional's user account"""
+  user: User!
+
+  """
+  An array of the files uploaded by the health professional during account verification
+  """
+  verification_files: [HealthCareProfessionalVerificationFile!]!
+
+  """The health professional's years of experience"""
+  years_of_experience: Int!
+}
+
+"""The roles that healthcare professionals can have"""
+enum HealthCareProfessionalRole {
+  DENTIST
+  DERMATOLOGIST
+  GENERAL_PRACTITIONER
+  LACTATIONIST
+  NUTRITIONIST
+  PEDEATRICIAN
+  THERAPIST
+}
+
+type HealthCareProfessionalVerificationFile {
+  """The date and time when the file was uploaded"""
+  created_at: DateTime!
+
+  """
+  The url of a file uploaded by a health professional during verification
+  """
+  file_url: String!
+
+  """The profile of the health professional who uploaded the file"""
+  health_professional_profile: HealthCareProfessionalProfile!
+
+  """The id of a file uploaded by a health professional during verification"""
+  id: Int!
+
+  """The type of file uploaded by a health professional during verification"""
+  type: HealthCareProfessionalVerificationFileType!
+
+  """The date and time when the file record was last updated"""
+  updated_at: DateTime!
+}
+
+"""
+The expected kinds of file uploads when verifying a health professionals account
+"""
+enum HealthCareProfessionalVerificationFileType {
+  MEDICAL_LICENSE
+  VALID_ID
+}
+
+"""Input for liking a post"""
+input LikePostInput {
+  """The id of the post the user wants to like"""
+  post_id: Int!
+
+  """The id of the user who wants to like the post"""
+  user_id: Int!
+}
+
+"""Input used in logging in a user account"""
+input LoginInput {
+  """The email"""
+  email: String!
+
+  """The password"""
+  password: String!
+}
+
+"""Response returned after logging in"""
+type LoginResponse {
+  """The jwt access token"""
+  access_token: String!
+
+  """The authenticated user"""
+  user: User!
+}
+
+type Mutation {
+  """Create a post"""
+  CreatePost(input: CreatePostInput!): Post!
+
+  """Create a post comment"""
+  CreatePostComment(input: PostCommentInput!): PostComment!
+
+  """Create a post comment reply"""
+  CreatePostCommentReply(input: PostCommentReplyInput!): PostCommentReply!
+
+  """Create a post tag"""
+  CreatePostTag(input: PostTagInput!): PostTag!
+
+  """Like a post"""
+  LikePost(input: LikePostInput!): ApiResponse!
+
+  """Login a user"""
+  Login(input: LoginInput!): LoginResponse!
+
+  """Report a post"""
+  ReportPost(input: ReportPostInput!): ApiResponse!
+
+  """Save a post"""
+  SavePost(input: SavePostInput!): ApiResponse!
+
+  """Create a user account for a caregiver"""
+  SignUpCareGiver(input: CreateCareGiverInput!): User!
+
+  """Create a user account for a health care professional"""
+  SignUpHealthCareProfessional(input: CreateHealthCareProfessionalInput!): User!
+  testFileUpload(files: [Upload!]!): ApiResponse!
+}
+
+"""Model for a post"""
+type Post {
+  """The post's comments"""
+  comments: [PostComment]!
+
+  """The post content"""
+  content: String!
+
+  """The date and time when the post was created"""
+  created_at: DateTime!
+
+  """The files uploaded to the post"""
+  files: [PostFileUpload]!
+
+  """The post id"""
+  id: Int!
+
+  """The number of likes the post has"""
+  likes: Int!
+
+  """Indicates if the post was posted anonymously or not"""
+  posted_anonymously: Boolean!
+
+  """The post's tags"""
+  tags: [PostTag]!
+
+  """The post title"""
+  title: String!
+
+  """The date and time when the post was last updated"""
+  updated_at: DateTime!
+
+  """The user who created the post"""
+  user: User!
+
+  """The post id"""
+  uuid: String!
+}
+
+"""Model for a comment made on a post"""
+type PostComment {
+  """The comments content"""
+  content: String!
+
+  """The date and time when the comment was created"""
+  created_at: DateTime!
+
+  """The comment id"""
+  id: Int!
+
+  """The post that was commented on"""
+  post: Post
+
+  """The replies to the post comment"""
+  replies: [PostCommentReply]!
+
+  """The user who made the comment"""
+  user: User!
+}
+
+"""Input for working with post comments"""
+input PostCommentInput {
+  """The comment made"""
+  content: String!
+
+  """The id of the post that was commented on"""
+  post_id: Int!
+
+  """The id of the user that made the comment"""
+  user_id: Int!
+}
+
+"""Model for a reply made on a comment"""
+type PostCommentReply {
+  """The post comment that was replied"""
+  comment: Post!
+
+  """The comment reply content"""
+  content: String!
+
+  """The date and time when the comment replay was posted"""
+  created_at: DateTime!
+
+  """The comment reply id"""
+  id: Int!
+
+  """The user who made the comment reply"""
+  user: User!
+}
+
+"""Input for for working with post comment replies"""
+input PostCommentReplyInput {
+  """The id of the post comment that was replied"""
+  comment_id: Int!
+
+  """The comment reply made"""
+  content: String!
+
+  """The id of the user that made the comment reply"""
+  user_id: Int!
+}
+
+"""Model for files uploaded to a post"""
+type PostFileUpload {
+  """The url of the ile uploaded to the post"""
+  file_url: String!
+
+  """The id of the file uploaded to the post"""
+  id: Int!
+}
+
+"""Model for a post tag"""
+type PostTag {
+  """The tag id"""
+  id: Int!
+
+  """The tags name"""
+  name: String!
+}
+
+"""Input for post tags"""
+input PostTagInput {
+  """The name of the tag"""
+  name: String!
+}
+
+"""Model for a post tag with the count of posts attached"""
+type PostTagWithCount {
+  """The tag id"""
+  id: Int!
+
+  """The tags name"""
+  name: String!
+
+  """The number of posts that have been tagged with this tag"""
+  number_of_posts: Int!
+}
+
+"""Enum for sorting post records"""
+enum PostsSortType {
+  LATEST
+  MOST_POPULAR
+  OLDEST
+}
+
+type Query {
+  """Find a user by their unique values like id, uuid or email"""
+  FindUser(input: FindUserInput!): User!
+
+  """Get the comments on a post"""
+  GetPostComments(input: GetPostCommentsInput!): [PostComment!]!
+
+  """Get the posts feed"""
+  GetPostsFeed(input: GetPostsFeedInput): [Post]!
+
+  """Get the posts for a tag"""
+  GetPostsForTag(input: GetPostsForTagInput!): [Post]!
+
+  """Get all forum posts tags"""
+  GetTags: [PostTagWithCount]!
+
+  """Get the posts created by a user"""
+  GetUserPosts(input: GetUserPostsInput!): [Post]!
+
+  """Get the posts saved by a user"""
+  GetUserSavedPosts(input: GetUserSavedPostsInput!): [Post]!
+
+  """Search for posts by title or content"""
+  SearchPosts(input: SearchPostsInput!): [Post]!
+}
+
+"""Input for reporting a post"""
+input ReportPostInput {
+  """The id of the post the user wants to report"""
+  post_id: Int!
+
+  """The reason the user is reporting the post"""
+  reason: String!
+
+  """The id of the user who wants to report the post"""
+  user_id: Int!
+}
+
+"""Input for saving a post"""
+input SavePostInput {
+  """The id of the post the user wants to save"""
+  post_id: Int!
+
+  """The id of the user who wants to save the post"""
+  user_id: Int!
+}
+
+"""Input for searching for posts"""
+input SearchPostsInput {
+  """The search query to search posts by"""
+  search_query: String!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type User {
+  """The user's care giver profile (if the user is a care giver)"""
+  care_giver_profile: CareGiverProfile
+
+  """The date and time when the user account was created"""
+  created_at: DateTime!
+
+  """The user's email address"""
+  email: String!
+
+  """The user's full name"""
+  full_name: String!
+
+  """
+  The user's health care professional profile (if the user is a health care professional)
+  """
+  health_care_professional_profile: HealthCareProfessionalProfile
+
+  """The user's id"""
+  id: Int!
+
+  """The user's phone number"""
+  phone_number: String!
+
+  """The user's profile image url"""
+  profile_image: String!
+
+  """The date and time when the user account was last updated"""
+  updated_at: DateTime!
+
+  """The user's type"""
+  user_type: UserType!
+
+  """The user's uuid"""
+  uuid: ID!
+}
+
+"""The types of users we have in the application domain"""
+enum UserType {
+  CARE_GIVER
+  HEALTH_CARE_PROFESSIONAL
+}
